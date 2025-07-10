@@ -1,1 +1,31 @@
-<!DOCTYPE html><html><head><title>dentalCO2-JPConvent</title></head><body><h1>App kommt bald...</h1></body></html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dentalCO2-JPConvent Prototyp</title>
+</head>
+<body>
+  <h1>dentalCO2-Klimabilanz (Prototyp)</h1>
+  <form>
+    <label>Kfz (Diesel-km): <input type="number" id="km" /></label><br>
+    <label>Stromverbrauch (kWh): <input type="number" id="strom" /></label><br>
+    <label>Papier (kg): <input type="number" id="papier" /></label><br>
+    <label>Bahnfahrt (km): <input type="number" id="bahn" /></label><br><br>
+    <button type="button" onclick="berechne()">CO₂ berechnen</button>
+  </form>
+  <p id="ergebnis"></p>
+  <script>
+    function berechne() {
+      const km = parseFloat(document.getElementById("km").value) || 0;
+      const strom = parseFloat(document.getElementById("strom").value) || 0;
+      const papier = parseFloat(document.getElementById("papier").value) || 0;
+      const bahn = parseFloat(document.getElementById("bahn").value) || 0;
+
+      const co2 = km * 0.164 + strom * 0.4 + papier * 1.3 + bahn * 0.045;
+      document.getElementById("ergebnis").innerText =
+        "Gesamtemission: " + co2.toFixed(2) + " kg CO₂e";
+    }
+  </script>
+</body>
+</html>
