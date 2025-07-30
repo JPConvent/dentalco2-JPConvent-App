@@ -1,0 +1,1 @@
+// JavaScript für Scope 1-3, CO₂-Baum-Umrechnung, Visualisierung, PDF-Export
