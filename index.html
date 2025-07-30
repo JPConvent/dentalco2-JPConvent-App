@@ -1,1 +1,21 @@
-<!-- Erweitertes HTML-Layout mit CI und Eingabemaske -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>dentalCO2-JPConvent Testversion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>dentalCO2-JPConvent – Testversion</h1>
+    <form>
+        <label>Firmenname: <input type="text" name="company" /></label><br>
+        <label>Stromverbrauch (kWh): <input type="number" name="electricity" /></label><br>
+        <label>Diesel-Kilometer/Jahr: <input type="number" name="diesel" /></label><br>
+        <button type="button" onclick="calculateCO2()">CO₂ berechnen</button>
+    </form>
+    <p id="result"></p>
+    <p class="info">PDF-Exportfunktion wird in der Vollversion aktiviert.</p>
+    <script src="app.js"></script>
+</body>
+</html>

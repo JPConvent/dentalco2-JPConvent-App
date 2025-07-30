@@ -1,1 +1,25 @@
-/* CI-Farben, Layout, Logo-Einbindung */
+
+body {
+    font-family: sans-serif;
+    margin: 2em;
+    background-color: #f5f5f5;
+}
+h1 {
+    color: #2b6777;
+}
+input {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+button {
+    background-color: #2b6777;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+.info {
+    margin-top: 20px;
+    color: gray;
+    font-size: 0.9em;
+}
