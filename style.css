@@ -1,61 +1,122 @@
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  background: #eef2f5;
-  padding: 2rem;
-  color: #1a1a1a;
+/* Basislayout */
+:root {
+  --bg: #eef2f5;
+  --card: #ffffff;
+  --ink: #1a1a1a;
+  --muted: #6b7280;
+  --line: #d6dde5;
+  --accent: #2b6777;
+  --scope1: #e3f2fd;
+  --scope2: #e8f5e9;
+  --scope3: #fff3e0;
 }
 
-header.header {
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.45;
+  padding: 1.5rem;
+}
+
+/* Header mit Label */
+.header {
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #ffffff;
-  border: 1px solid #d6dde5;
-  border-radius: 10px;
-  margin-bottom: 2rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  margin-bottom: 1.25rem;
 }
-
 .label-img {
   width: 140px;
   height: auto;
   display: block;
-  border: 1px solid #e3e8ef; /* Sichtbarmachung */
+  border: 1px solid #e3e8ef; /* Sichtbar auch bei transparentem Label */
   background: #f9fafb;
 }
+h1 { margin: 0; font-size: 1.35rem; color: #264653; }
 
-h1 {
-  margin: 0;
-  font-size: 1.4rem;
-  color: #264653;
+/* Karten & Sektionen */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
-form label {
-  display: block;
-  margin: 0.6rem 0;
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: #22313f;
+}
+.section-subtitle {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #2f3e4d;
 }
 
-input[type="text"], input[type="number"] {
-  width: 100%;
-  max-width: 420px;
-  padding: 0.5rem 0.6rem;
+/* Scope-Banner */
+.scope-header {
+  font-weight: 600;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  margin: 0.5rem 0;
+}
+.scope1 { background: var(--scope1); }
+.scope2 { background: var(--scope2); }
+.scope3 { background: var(--scope3); }
+
+/* Gitterformular */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem 1rem;
+}
+label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.95rem; }
+input, select {
+  padding: 0.55rem 0.65rem;
   border: 1px solid #cfd8e3;
   border-radius: 8px;
   background: #fff;
+  font-size: 0.95rem;
+  width: 100%;
 }
 
-button {
-  margin-top: 1rem;
-  background: #2b6777;
+/* Trennlinie */
+.divider {
+  height: 1px;
+  background: var(--line);
+  margin: 0.9rem 0 1rem;
+  border-radius: 1px;
+}
+
+/* Footer / Buttons */
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+.btn-primary {
+  background: var(--accent);
   color: #fff;
   border: 0;
   padding: 0.6rem 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
 }
+.muted { color: var(--muted); font-size: 0.92rem; }
 
-.muted {
-  color: #6b7280;
-  margin-top: 1rem;
+/* Responsiv */
+@media (max-width: 520px) {
+  .label-img { width: 110px; }
+  h1 { font-size: 1.1rem; }
 }
