@@ -1,10 +1,61 @@
-
 body {
-  font-family: sans-serif;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   background: #eef2f5;
-  padding: 2em;
+  padding: 2rem;
+  color: #1a1a1a;
 }
-label {
+
+header.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid #d6dde5;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.label-img {
+  width: 140px;
+  height: auto;
   display: block;
-  margin: 0.5em 0;
+  border: 1px solid #e3e8ef; /* Sichtbarmachung */
+  background: #f9fafb;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #264653;
+}
+
+form label {
+  display: block;
+  margin: 0.6rem 0;
+}
+
+input[type="text"], input[type="number"] {
+  width: 100%;
+  max-width: 420px;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #cfd8e3;
+  border-radius: 8px;
+  background: #fff;
+}
+
+button {
+  margin-top: 1rem;
+  background: #2b6777;
+  color: #fff;
+  border: 0;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.muted {
+  color: #6b7280;
+  margin-top: 1rem;
 }
