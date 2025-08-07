@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>dentalCO2-JPConvent – Klimabilanz (Layout-Test)</title>
+  <title>dentalCO2-JPConvent – Klimabilanz (Berechnung DE)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -45,19 +45,13 @@
         <input type="number" min="0" name="behandlungsplaetze" />
       </label>
       <label>Eigenlabor vorhanden
-        <select name="eigenlabor">
-          <option>Nein</option><option>Ja</option>
-        </select>
+        <select name="eigenlabor"><option>Nein</option><option>Ja</option></select>
       </label>
       <label>Fremdlabor (Fahrer)
-        <select name="fremdlabor_fahrer">
-          <option>Nein</option><option>Ja</option>
-        </select>
+        <select name="fremdlabor_fahrer"><option>Nein</option><option>Ja</option></select>
       </label>
       <label>Fremdlabor (online/cloud)
-        <select name="fremdlabor_cloud">
-          <option>Nein</option><option>Ja</option>
-        </select>
+        <select name="fremdlabor_cloud"><option>Nein</option><option>Ja</option></select>
       </label>
     </div>
 
@@ -91,19 +85,19 @@
         <label>Anzahl Firmen-Kfz
           <input type="number" min="0" name="anz_kfz" />
         </label>
-        <label>Diesel (Anteil Fahrzeuge)
+        <label>Diesel (Anzahl)
           <input type="number" min="0" name="kfz_diesel" />
         </label>
-        <label>Benzin (Anteil Fahrzeuge)
+        <label>Benzin (Anzahl)
           <input type="number" min="0" name="kfz_benzin" />
         </label>
-        <label>Strom (Anteil Fahrzeuge)
+        <label>Strom (Anzahl)
           <input type="number" min="0" name="kfz_strom" />
         </label>
-        <label>H₂ (Anteil Fahrzeuge)
+        <label>H₂ (Anzahl)
           <input type="number" min="0" name="kfz_h2" />
         </label>
-        <label>Ø Gesamtkilometer/Jahr
+        <label>Ø Gesamtkilometer/Jahr (Flotte)
           <input type="number" min="0" name="kfz_km_gesamt" />
         </label>
       </div>
@@ -130,6 +124,7 @@
         <label>Heizwärmebedarf (kWh/m²·a)
           <input type="number" min="0" name="heizwaermebedarf" />
         </label>
+        <!-- Für eine echte Berechnung bräuchten wir zusätzlich kWh/Jahr oder Fläche – derzeit = 0. -->
       </div>
     </div>
   </section>
@@ -157,6 +152,9 @@
         </label>
         <label>Insel-PV (kWp)
           <input type="number" min="0" name="insel_pv" />
+        </label>
+        <label>Kälteverbrauch (kWh/Jahr)
+          <input type="number" min="0" name="kaelte" />
         </label>
       </div>
 
@@ -190,9 +188,6 @@
         </label>
         <label>Klimaanlage vorhanden
           <select name="klimaanlage"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Kälteverbrauch (kWh/Jahr)
-          <input type="number" min="0" name="kaelte" />
         </label>
         <label>Luftumwälzung vorhanden
           <select name="luftumwaelzung"><option>Nein</option><option>Ja</option></select>
@@ -418,9 +413,24 @@
   </section>
 
   <footer class="footer">
-    <button type="button" class="btn-primary">Layout getestet – Weiter zur Berechnung (später)</button>
-    <p class="muted">Hinweis: Dies ist ein Layout-Test ohne Berechnung. PDF-Export folgt.</p>
+    <button type="button" id="calcBtn" class="btn-primary">CO₂ berechnen</button>
+    <p class="muted">Emissionsfaktoren: DE-Defaults; Anpassung folgt im Admin-Bereich.</p>
   </footer>
+
+  <!-- Ergebnis -->
+  <section class="card" id="resultCard" style="display:none;">
+    <h2 class="section-title">Ergebnis</h2>
+    <div class="grid">
+      <div><strong>Scope 1:</strong> <span id="outScope1">–</span> kg CO₂e</div>
+      <div><strong>Scope 2:</strong> <span id="outScope2">–</span> kg CO₂e</div>
+      <div><strong>Scope 3:</strong> <span id="outScope3">–</span> kg CO₂e</div>
+      <div class="divider"></div>
+      <div><strong>Gesamt:</strong> <span id="outTotal">–</span> kg CO₂e</div>
+      <div><strong>Erforderliche Bäume/Jahr:</strong> <span id="outTrees">–</span></div>
+      <div><strong>CO₂-Volumen:</strong> <span id="outVolume">–</span> m³</div>
+      <div><strong>Säulenhöhe über Fußballfeld:</strong> <span id="outHeight">–</span> m (<span id="outTVPct">–</span>% Fernsehturm)</div>
+    </div>
+  </section>
 
   <script src="app.js"></script>
 </body>
