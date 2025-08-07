@@ -1,4 +1,4 @@
-/* Basislayout */
+/* Basislayout & CI */
 :root {
   --bg: #eef2f5;
   --card: #ffffff;
@@ -115,8 +115,12 @@ input, select {
 }
 .muted { color: var(--muted); font-size: 0.92rem; }
 
+/* Ergebnis */
+#resultCard strong { color: #22313f; }
+
 /* Responsiv */
 @media (max-width: 520px) {
   .label-img { width: 110px; }
   h1 { font-size: 1.1rem; }
 }
+
