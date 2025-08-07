@@ -1,5 +1,4 @@
-// Platzhalter für spätere Scope-Berechnung und PDF-Export
-document.querySelector("form").addEventListener("submit", function (e) {
-  e.preventDefault();
-  alert("Berechnung erfolgt im nächsten Schritt – PDF Export wird vorbereitet.");
-});
+// Layout-Test: noch keine Berechnungen.
+// Optional: spätere Auto-Speicherung / Validierungen hier ergänzen.
+
+console.log("Layout-Test geladen. Keine Berechnungen aktiv.");
