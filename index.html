@@ -1,1 +1,28 @@
-<!DOCTYPE html><html><head><title>Vollversion</title></head><body><h1>dentalCO2-JPConvent – Vollversion</h1><p>Alle Eingabefelder integriert – PDF-Export vorbereitet.</p></body></html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dentalCO2-JPConvent – Vollversion</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Klimabilanzierung: Zahnarztpraxis / Dentallabor</h1>
+  <form>
+    <label>Praxisname: <input type="text" name="praxisname" /></label><br />
+    <label>Stromverbrauch (kWh/Jahr): <input type="number" name="strom" /></label><br />
+    <label>Dieselverbrauch (km/Jahr): <input type="number" name="km_diesel" /></label><br />
+    <label>Anzahl Behandlungseinheiten: <input type="number" name="behandlungseinheiten" /></label><br />
+    <label>Davon Cloud-angebunden: <input type="number" name="behandlung_cloud" /></label><br />
+    <label>Anzahl Sterilisatoren etc.: <input type="number" name="steri" /></label><br />
+    <label>Davon Cloud-angebunden: <input type="number" name="steri_cloud" /></label><br />
+    <label>Erforderliche Wartungen: <input type="number" name="wartungen_erforderlich" /></label><br />
+    <label>Tatsächliche Wartungen: <input type="number" name="wartungen_real" /></label><br />
+    <label>Gesparte Anfahrten durch Bündelung: <input type="number" name="anfahrten_gespart" /></label><br />
+    <label>Service-Fahrtstrecke (hin & zurück in km): <input type="number" name="km_service" /></label><br />
+    <button type="submit">Berechnen</button>
+  </form>
+  <p>PDF-Export in Arbeit.</p>
+  <script src="app.js"></script>
+</body>
+</html>
