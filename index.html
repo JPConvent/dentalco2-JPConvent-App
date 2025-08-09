@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -16,7 +16,7 @@
     </div>
   </header>
 
-  <!-- Stammdaten (relevante Felder für Name & Datum) -->
+  <!-- Stammdaten -->
   <section class="card">
     <h2 class="section-title">Stammdaten</h2>
     <div class="grid">
@@ -41,14 +41,49 @@
       <label>PLZ / Ort
         <input type="text" name="plzort" />
       </label>
+      <label>Anzahl Mitarbeitende (inkl. GF)
+        <input type="number" min="0" name="mitarbeiter" />
+      </label>
+      <label>Anzahl Behandlungsplätze
+        <input type="number" min="0" name="behandlungsplaetze" />
+      </label>
+      <label>Eigenlabor vorhanden
+        <select name="eigenlabor"><option>Nein</option><option>Ja</option></select>
+      </label>
+      <label>Fremdlabor (Fahrer)
+        <select name="fremdlabor_fahrer"><option>Nein</option><option>Ja</option></select>
+      </label>
+      <label>Fremdlabor (online/cloud)
+        <select name="fremdlabor_cloud"><option>Nein</option><option>Ja</option></select>
+      </label>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="grid">
+      <label>QM vorhanden
+        <select name="qm"><option>Nein</option><option>Ja</option></select>
+      </label>
+      <label>Hygienebeauftragte*r
+        <select name="hygiene"><option>Nein</option><option>Ja</option></select>
+      </label>
+      <label>Arbeitsschutzbeauftragte*r
+        <select name="arbeitsschutz"><option>Nein</option><option>Ja</option></select>
+      </label>
+      <label>DSGVO-/Datenschutzbeauftragte*r
+        <select name="dsgvo"><option>Nein</option><option>Ja</option></select>
+      </label>
+      <label>KI-Beauftragte*r
+        <select name="ki_beauftragte"><option>Nein</option><option>Ja</option></select>
+      </label>
     </div>
   </section>
 
-  <!-- Scope 1 -->
+  <!-- SCOPE 1 -->
   <section class="scope">
     <div class="scope-header scope1">Scope 1 – Direkte Emissionen</div>
     <div class="card">
-      <h3 class="section-subtitle">Fuhrpark</h3>
+      <h3 class="section-subtitle">Fuhrpark (Praxisfahrzeuge)</h3>
       <div class="grid">
         <label>Anzahl Firmen-Kfz <input type="number" min="0" name="anz_kfz" /></label>
         <label>Diesel (Anzahl) <input type="number" min="0" name="kfz_diesel" /></label>
@@ -57,22 +92,34 @@
         <label>H₂ (Anzahl) <input type="number" min="0" name="kfz_h2" /></label>
         <label>Ø Gesamtkilometer/Jahr (Flotte) <input type="number" min="0" name="kfz_km_gesamt" /></label>
       </div>
+
       <div class="divider"></div>
-      <h3 class="section-subtitle">Heizung</h3>
+
+      <h3 class="section-subtitle">Heizung (eigene Erzeugung)</h3>
       <div class="grid">
         <label>Heizsystem
           <select name="heizung_typ">
-            <option>Keine Angabe</option><option>Öl</option><option>Gas</option>
-            <option>Holzvergaser</option><option>Erd-Wärmepumpe</option><option>Luft-Wärmepumpe</option><option>Fernwärme</option>
+            <option>Keine Angabe</option>
+            <option>Öl</option>
+            <option>Gas</option>
+            <option>Holzvergaser</option>
+            <option>Erd-Wärmepumpe</option>
+            <option>Luft-Wärmepumpe</option>
+            <option>Fernwärme</option>
+            <option>Sonstiges</option>
           </select>
         </label>
-        <label>Baujahr Heizungsanlage <input type="number" min="1900" max="2100" name="heizung_baujahr" /></label>
-        <label>Heizwärmebedarf (kWh/m²·a) <input type="number" min="0" name="heizwaermebedarf" /></label>
+        <label>Baujahr Heizungsanlage
+          <input type="number" min="1900" max="2100" name="heizung_baujahr" />
+        </label>
+        <label>Heizwärmebedarf (kWh/m²·a)
+          <input type="number" min="0" name="heizwaermebedarf" />
+        </label>
       </div>
     </div>
   </section>
 
-  <!-- Scope 2 -->
+  <!-- SCOPE 2 -->
   <section class="scope">
     <div class="scope-header scope2">Scope 2 – Eingekaufte Energie</div>
     <div class="card">
@@ -81,40 +128,132 @@
         <label>Stromverbrauch gesamt (kWh/Jahr) <input type="number" min="0" name="strom_jahr" /></label>
         <label>Ökostrom-Anteil (%) <input type="number" min="0" max="100" name="oekostrom" /></label>
         <label>Stromanbieter <input type="text" name="stromanbieter" /></label>
-        <label>Eigene PV (kWp) <input type="number" min="0" name="pv" /></label>
+        <label>Eigene PV (öffentlich) in kWp <input type="number" min="0" name="pv" /></label>
+        <label>Balkonkraftwerk (kWp) <input type="number" min="0" name="balkon_pv" /></label>
+        <label>Insel-PV (kWp) <input type="number" min="0" name="insel_pv" /></label>
         <label>Kälteverbrauch (kWh/Jahr) <input type="number" min="0" name="kaelte" /></label>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="section-subtitle">Gebäude-Effizienz</h3>
+      <div class="grid">
+        <label>Energieausweis vorhanden
+          <select name="energieausweis"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>Energieeffizienzklasse
+          <input type="text" name="effizienzklasse" placeholder="z. B. A+, B, C" />
+        </label>
+        <label>Passivhaus
+          <select name="passivhaus"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>Nullenergiehaus
+          <select name="nullenergie"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>Energie-Plus-Haus
+          <select name="plus_haus"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>Energieautarkes Haus
+          <select name="autark_haus"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>Niedrigenergiehaus
+          <select name="niedrigenergie"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>3-Liter-Haus
+          <select name="drei_liter"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>Klimaanlage vorhanden
+          <select name="klimaanlage"><option>Nein</option><option>Ja</option></select>
+        </label>
+        <label>Luftumwälzung vorhanden
+          <select name="luftumwaelzung"><option>Nein</option><option>Ja</option></select>
+        </label>
       </div>
     </div>
   </section>
 
-  <!-- Scope 3 -->
+  <!-- SCOPE 3 -->
   <section class="scope">
     <div class="scope-header scope3">Scope 3 – Sonstige indirekte Emissionen</div>
     <div class="card">
-      <h3 class="section-subtitle">Digitale Prozesse & Service</h3>
+      <h3 class="section-subtitle">Digitale Prozesse & Technischer Service</h3>
       <div class="grid">
         <label>Anzahl Behandlungseinheiten <input type="number" min="0" name="beh_einheiten" /></label>
         <label>Davon Cloudanbindung <input type="number" min="0" name="beh_cloud" /></label>
+        <label>Steri/Thermodesinf./Reinigungsgeräte (Anzahl) <input type="number" min="0" name="steri" /></label>
+        <label>Davon Cloudanbindung <input type="number" min="0" name="steri_cloud" /></label>
         <label>Erforderliche Wartungen (p. a.) <input type="number" min="0" name="wartung_soll" /></label>
         <label>Tatsächliche Wartungen (p. a.) <input type="number" min="0" name="wartung_ist" /></label>
-        <label>Gesparte Anfahrten (p. a.) <input type="number" min="0" name="anfahrten_gespart" /></label>
+        <label>Durch Bündelung gesparte Anfahrten (p. a.) <input type="number" min="0" name="anfahrten_gespart" /></label>
         <label>Service-Fahrtstrecke (hin & zurück, km) <input type="number" min="0" name="service_km_hz" /></label>
         <label>Cloud-Service genutzt?
           <select name="cloud_genutzt">
-            <option>Nein</option><option>Ja – pauschal</option><option>Ja – volumenbasiert</option>
+            <option>Nein</option>
+            <option>Ja – pauschal</option>
+            <option>Ja – volumenbasiert</option>
           </select>
         </label>
-        <label>Cloud-Datenvolumen (GB/Monat) <input type="number" min="0" name="cloud_gb" /></label>
+        <label>Cloud-Datenvolumen (GB/Monat, falls volumenbasiert) <input type="number" min="0" name="cloud_gb" /></label>
       </div>
 
       <div class="divider"></div>
-      <h3 class="section-subtitle">Papier, Pendeln</h3>
+
+      <h3 class="section-subtitle">Abrechnung, Bestellungen, KI</h3>
       <div class="grid">
-        <label>Drucksachen (Blatt/Jahr) <input type="number" min="0" name="druck_blatt" /></label>
-        <label>Pendeln Kfz (km/Jahr) <input type="number" min="0" name="pendel_kfz" /></label>
-        <label>Pendeln E-Mobility (km/Jahr) <input type="number" min="0" name="pendel_emob" /></label>
+        <label>Abrechnungsservice vor Ort <select name="abrechnung_vorort"><option>Nein</option><option>Ja</option></select></label>
+        <label>Abrechnungsservice extern <select name="abrechnung_extern"><option>Nein</option><option>Ja</option></select></label>
+        <label>Davon online (%) <input type="number" min="0" max="100" name="abrechnung_online_pct" /></label>
+        <label>E-Rechnung möglich <select name="erechnung"><option>Nein</option><option>Ja</option></select></label>
+        <label>Rechnungen per Post (Anz./Monat) <input type="number" min="0" name="rechnungen_post" /></label>
+        <label>Digitale Belegerfassung <select name="belegerfassung"><option>Nein</option><option>Ja</option></select></label>
+        <label>KI-Terminvergabe <select name="ki_termin"><option>Nein</option><option>Ja</option></select></label>
+        <label>KI-Röntgen <select name="ki_roentgen"><option>Nein</option><option>Ja</option></select></label>
+        <label>KI-Sterilisation <select name="ki_steri"><option>Nein</option><option>Ja</option></select></label>
+        <label>Abformfreie Praxis (% Fälle) <input type="number" min="0" max="100" name="abformfrei_pct" /></label>
+        <label>Online-Bestellprogramm <select name="bestellprogramm"><option>Nein</option><option>Ja</option></select></label>
+        <label>Cloud-Anbindung technischer Service <select name="cloud_service"><option>Nein</option><option>Ja</option></select></label>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="section-subtitle">Wasser & Ressourcen</h3>
+      <div class="grid">
+        <label>Wasserverbrauch (Liter/Jahr) <input type="number" min="0" name="wasser" /></label>
+        <label>Solarthermie <select name="solarthermie"><option>Nein</option><option>Ja</option></select></label>
+        <label>Eigener Brunnen <select name="brunnen"><option>Nein</option><option>Ja</option></select></label>
+        <label>Grauwasser-Aufbereitung <select name="grauwasser"><option>Nein</option><option>Ja</option></select></label>
+        <label>Regenwassernutzung <select name="regenwasser"><option>Nein</option><option>Ja</option></select></label>
+        <label>Abfall getrennt entsorgt <select name="abfall_trennung"><option>Nein</option><option>Ja</option></select></label>
+        <label>Recycling Betriebsabfälle (fachgerecht) <select name="recycling"><option>Nein</option><option>Ja</option></select></label>
+        <label>Komposttoilette ohne H₂O <select name="kompost"><option>Nein</option><option>Ja</option></select></label>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="section-subtitle">Mobilität – Pendeln & Geschäft</h3>
+      <div class="grid">
+        <label>Pendeln Kfz (km/Jahr, gesamt) <input type="number" min="0" name="pendel_kfz" /></label>
+        <label>Pendeln E-Mobility (km/Jahr, gesamt) <input type="number" min="0" name="pendel_emob" /></label>
         <label>Pendeln Motorrad (km/Jahr) <input type="number" min="0" name="pendel_motorrad" /></label>
-        <label>Pendeln ÖPNV/Bahn (km/Jahr) <input type="number" min="0" name="pendel_oev" /></label>
+        <label>Pendeln Öffentlich (km/Jahr) <input type="number" min="0" name="pendel_oev" /></label>
+        <label>Pendeln Fahrrad (km/Jahr) <input type="number" min="0" name="pendel_rad" /></label>
+        <label>Pendeln E-Bike (km/Jahr) <input type="number" min="0" name="pendel_ebike" /></label>
+        <label>Geschäftsverkehr Kfz (Fahrten/Woche) <input type="number" min="0" name="geschaeft_kfz" /></label>
+        <label>Geschäftsverkehr E-Kfz (Fahrten/Woche) <input type="number" min="0" name="geschaeft_ekfz" /></label>
+        <label>Geschäftsverkehr H₂-Kfz (Fahrten/Woche) <input type="number" min="0" name="geschaeft_h2" /></label>
+        <label>Unterkunft ISO 14001/GreenSign (Nächte/Woche) <input type="number" min="0" name="hotel_iso" /></label>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="section-subtitle">Material, Lieferanten, Papier</h3>
+      <div class="grid">
+        <label>Verbrauchsmaterial Biokompatibilität (%) <input type="number" min="0" max="100" name="bio_pct" /></label>
+        <label>Lieferanten gesamt <input type="number" min="0" name="lieferanten" /></label>
+        <label>Davon klimaneutral <input type="number" min="0" name="lieferanten_cn" /></label>
+        <label>Papierlose Kommunikation (%) <input type="number" min="0" max="100" name="papierlos_pct" /></label>
+        <label>Drucksachen (Blatt/Jahr) <input type="number" min="0" name="druck_blatt" /></label>
+        <label>Werbegeschenke / Give-Aways <input type="text" name="giveaways" /></label>
       </div>
     </div>
   </section>
