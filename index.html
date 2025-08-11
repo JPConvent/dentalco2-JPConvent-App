@@ -20,33 +20,15 @@
   <section class="card">
     <h2 class="section-title">Stammdaten</h2>
     <div class="grid">
-      <label>Datum Erstvalidierung Klimaneutral
-        <input type="date" name="erstvalidierung" />
-      </label>
-      <label>Datum Revalidierung Klimaneutral
-        <input type="date" name="revalidierung" />
-      </label>
-      <label>Name des Unternehmens
-        <input type="text" name="unternehmen" placeholder="z. B. JPConvent UG" />
-      </label>
-      <label>Name der Praxis
-        <input type="text" name="praxis" placeholder="z. B. Praxis Testbilanz" />
-      </label>
-      <label>Name auf dem Klimalabel
-        <input type="text" name="labelname" placeholder="für das Label" />
-      </label>
-      <label>Straße / Nr.
-        <input type="text" name="strasse" />
-      </label>
-      <label>PLZ / Ort
-        <input type="text" name="plzort" />
-      </label>
-      <label>Anzahl Mitarbeitende (inkl. GF)
-        <input type="number" min="0" name="mitarbeiter" />
-      </label>
-      <label>Anzahl Behandlungsplätze
-        <input type="number" min="0" name="behandlungsplaetze" />
-      </label>
+      <label>Datum Erstvalidierung Klimaneutral <input type="date" name="erstvalidierung" /></label>
+      <label>Datum Revalidierung Klimaneutral <input type="date" name="revalidierung" /></label>
+      <label>Name des Unternehmens <input type="text" name="unternehmen" placeholder="z. B. JPConvent UG" /></label>
+      <label>Name der Praxis <input type="text" name="praxis" placeholder="z. B. Praxis Testbilanz" /></label>
+      <label>Name auf dem Klimalabel <input type="text" name="labelname" placeholder="für das Label" /></label>
+      <label>Straße / Nr. <input type="text" name="strasse" /></label>
+      <label>PLZ / Ort <input type="text" name="plzort" /></label>
+      <label>Anzahl Mitarbeitende (inkl. GF) <input type="number" min="0" name="mitarbeiter" /></label>
+      <label>Anzahl Behandlungsplätze <input type="number" min="0" name="behandlungsplaetze" /></label>
       <label>Eigenlabor vorhanden
         <select name="eigenlabor"><option>Nein</option><option>Ja</option></select>
       </label>
@@ -61,25 +43,15 @@
     <div class="divider"></div>
 
     <div class="grid">
-      <label>QM vorhanden
-        <select name="qm"><option>Nein</option><option>Ja</option></select>
-      </label>
-      <label>Hygienebeauftragte*r
-        <select name="hygiene"><option>Nein</option><option>Ja</option></select>
-      </label>
-      <label>Arbeitsschutzbeauftragte*r
-        <select name="arbeitsschutz"><option>Nein</option><option>Ja</option></select>
-      </label>
-      <label>DSGVO-/Datenschutzbeauftragte*r
-        <select name="dsgvo"><option>Nein</option><option>Ja</option></select>
-      </label>
-      <label>KI-Beauftragte*r
-        <select name="ki_beauftragte"><option>Nein</option><option>Ja</option></select>
-      </label>
+      <label>QM vorhanden <select name="qm"><option>Nein</option><option>Ja</option></select></label>
+      <label>Hygienebeauftragte*r <select name="hygiene"><option>Nein</option><option>Ja</option></select></label>
+      <label>Arbeitsschutzbeauftragte*r <select name="arbeitsschutz"><option>Nein</option><option>Ja</option></select></label>
+      <label>DSGVO-/Datenschutzbeauftragte*r <select name="dsgvo"><option>Nein</option><option>Ja</option></select></label>
+      <label>KI-Beauftragte*r <select name="ki_beauftragte"><option>Nein</option><option>Ja</option></select></label>
     </div>
   </section>
 
-  <!-- SCOPE 1 -->
+  <!-- Scope 1 -->
   <section class="scope">
     <div class="scope-header scope1">Scope 1 – Direkte Emissionen</div>
     <div class="card">
@@ -99,27 +71,18 @@
       <div class="grid">
         <label>Heizsystem
           <select name="heizung_typ">
-            <option>Keine Angabe</option>
-            <option>Öl</option>
-            <option>Gas</option>
-            <option>Holzvergaser</option>
-            <option>Erd-Wärmepumpe</option>
-            <option>Luft-Wärmepumpe</option>
-            <option>Fernwärme</option>
-            <option>Sonstiges</option>
+            <option>Keine Angabe</option><option>Öl</option><option>Gas</option>
+            <option>Holzvergaser</option><option>Erd-Wärmepumpe</option>
+            <option>Luft-Wärmepumpe</option><option>Fernwärme</option><option>Sonstiges</option>
           </select>
         </label>
-        <label>Baujahr Heizungsanlage
-          <input type="number" min="1900" max="2100" name="heizung_baujahr" />
-        </label>
-        <label>Heizwärmebedarf (kWh/m²·a)
-          <input type="number" min="0" name="heizwaermebedarf" />
-        </label>
+        <label>Baujahr Heizungsanlage <input type="number" min="1900" max="2100" name="heizung_baujahr" /></label>
+        <label>Heizwärmebedarf (kWh/m²·a) <input type="number" min="0" name="heizwaermebedarf" /></label>
       </div>
     </div>
   </section>
 
-  <!-- SCOPE 2 -->
+  <!-- Scope 2 -->
   <section class="scope">
     <div class="scope-header scope2">Scope 2 – Eingekaufte Energie</div>
     <div class="card">
@@ -138,41 +101,21 @@
 
       <h3 class="section-subtitle">Gebäude-Effizienz</h3>
       <div class="grid">
-        <label>Energieausweis vorhanden
-          <select name="energieausweis"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Energieeffizienzklasse
-          <input type="text" name="effizienzklasse" placeholder="z. B. A+, B, C" />
-        </label>
-        <label>Passivhaus
-          <select name="passivhaus"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Nullenergiehaus
-          <select name="nullenergie"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Energie-Plus-Haus
-          <select name="plus_haus"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Energieautarkes Haus
-          <select name="autark_haus"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Niedrigenergiehaus
-          <select name="niedrigenergie"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>3-Liter-Haus
-          <select name="drei_liter"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Klimaanlage vorhanden
-          <select name="klimaanlage"><option>Nein</option><option>Ja</option></select>
-        </label>
-        <label>Luftumwälzung vorhanden
-          <select name="luftumwaelzung"><option>Nein</option><option>Ja</option></select>
-        </label>
+        <label>Energieausweis vorhanden <select name="energieausweis"><option>Nein</option><option>Ja</option></select></label>
+        <label>Energieeffizienzklasse <input type="text" name="effizienzklasse" placeholder="z. B. A+, B, C" /></label>
+        <label>Passivhaus <select name="passivhaus"><option>Nein</option><option>Ja</option></select></label>
+        <label>Nullenergiehaus <select name="nullenergie"><option>Nein</option><option>Ja</option></select></label>
+        <label>Energie-Plus-Haus <select name="plus_haus"><option>Nein</option><option>Ja</option></select></label>
+        <label>Energieautarkes Haus <select name="autark_haus"><option>Nein</option><option>Ja</option></select></label>
+        <label>Niedrigenergiehaus <select name="niedrigenergie"><option>Nein</option><option>Ja</option></select></label>
+        <label>3-Liter-Haus <select name="drei_liter"><option>Nein</option><option>Ja</option></select></label>
+        <label>Klimaanlage vorhanden <select name="klimaanlage"><option>Nein</option><option>Ja</option></select></label>
+        <label>Luftumwälzung vorhanden <select name="luftumwaelzung"><option>Nein</option><option>Ja</option></select></label>
       </div>
     </div>
   </section>
 
-  <!-- SCOPE 3 -->
+  <!-- Scope 3 -->
   <section class="scope">
     <div class="scope-header scope3">Scope 3 – Sonstige indirekte Emissionen</div>
     <div class="card">
@@ -187,13 +130,9 @@
         <label>Durch Bündelung gesparte Anfahrten (p. a.) <input type="number" min="0" name="anfahrten_gespart" /></label>
         <label>Service-Fahrtstrecke (hin & zurück, km) <input type="number" min="0" name="service_km_hz" /></label>
         <label>Cloud-Service genutzt?
-          <select name="cloud_genutzt">
-            <option>Nein</option>
-            <option>Ja – pauschal</option>
-            <option>Ja – volumenbasiert</option>
-          </select>
+          <select name="cloud_genutzt"><option>Nein</option><option>Ja – pauschal</option><option>Ja – volumenbasiert</option></select>
         </label>
-        <label>Cloud-Datenvolumen (GB/Monat, falls volumenbasiert) <input type="number" min="0" name="cloud_gb" /></label>
+        <label>Cloud-Datenvolumen (GB/Monat) <input type="number" min="0" name="cloud_gb" /></label>
       </div>
 
       <div class="divider"></div>
@@ -280,7 +219,6 @@
   </footer>
 
   <script src="app.js"></script>
-  <!-- PDF-Bibliotheken (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </body>
