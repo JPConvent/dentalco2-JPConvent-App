@@ -149,11 +149,11 @@ $("#pdfBtn")?.addEventListener("click", async ()=>{
   doc.addPage();
   header(doc, praxis, datum, "Zusammenfassung");
   doc.setFont("helvetica","normal"); doc.setFontSize(12);
-  doc.text(`Scope 1: ${res.s1.toFixed(0)} kg CO₂e`, 56, 140);
-  doc.text(`Scope 2: ${res.s2.toFixed(0)} kg CO₂e`, 56, 160);
-  doc.text(`Scope 3: ${res.s3.toFixed(0)} kg CO₂e`, 56, 180);
+  doc.text(`Scope 1: ${res.s1.toFixed(0)} kg CO₂`, 56, 140);
+  doc.text(`Scope 2: ${res.s2.toFixed(0)} kg CO₂`, 56, 160);
+  doc.text(`Scope 3: ${res.s3.toFixed(0)} kg CO₂`, 56, 180);
   doc.setFont("helvetica","bold");
-  doc.text(`Gesamt: ${res.total.toFixed(0)} kg CO₂e`, 56, 205);
+  doc.text(`Gesamt: ${res.total.toFixed(0)} kg CO₂`, 56, 205);
   doc.setFont("helvetica","normal");
   doc.text(`Bäume zur Kompensation: ${Math.ceil(res.trees)}`, 56, 240);
   doc.text(`CO₂-Volumen: ${res.vol_m3.toFixed(0)} m³`, 56, 260);
