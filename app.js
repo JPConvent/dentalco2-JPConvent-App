@@ -150,37 +150,41 @@ function drawCO2Title(doc, x, y, baseSize){
 }
 
 function drawWatermarkCO2(doc, pageW, pageH){
-  // Wir zentrieren den zusammengesetzten Text ungefähr in der Mitte
-  const baseSize = 34;          // kleiner als zuvor
-  const subSize = baseSize*0.7;
-  doc.saveGraphicsState();
-  doc.setGState(new doc.GState({opacity:0.085})); // dezenter
-  doc.setFont("helvetica","bold");
+  const baseSize = 34;              // kleineres Wasserzeichen
+  const subSize  = baseSize * 0.7;
+  const cx = pageW / 2, cy = pageH / 2;
 
-  // Breiten schätzen für Zentrierung
+  // Transparenz robust setzen (falls GState verfügbar)
+  if (doc.GState) {
+    doc.saveGraphicsState();
+    doc.setGState(new doc.GState({ opacity: 0.085 }));
+  }
+
+  doc.setFont("helvetica", "bold");
+
+  // Breiten ermitteln
   doc.setFontSize(baseSize);
   const wP1 = doc.getTextWidth(WM_P1);
   doc.setFontSize(subSize);
-  const wSub = doc.getTextWidth("2") * (subSize/baseSize);
+  const wSub = doc.getTextWidth("2");
   doc.setFontSize(baseSize);
   const wP2 = doc.getTextWidth(WM_P2);
   const totalW = wP1 + 2 + wSub + 2 + wP2;
 
-  // Rotations-Zentrum: Seitenmitte
-  doc.rotate(30, { origin: [pageW/2, pageH/2] });
+  const startX = cx - totalW / 2;
+  const baseY  = cy;
 
-  const startX = pageW/2 - totalW/2;
-  const baseY  = pageH/2;
-
-  // Zeichnen
+  // Zeichnen – jeweils mit Winkel +30°; die "2" echte Tiefstellung
   doc.setFontSize(baseSize);
-  doc.text(WM_P1, startX, baseY);
+  doc.text(WM_P1, startX, baseY, { angle: 30 });
+
   doc.setFontSize(subSize);
-  doc.text("2", startX + wP1 + 2, baseY + baseSize*0.28);
-  doc.setFontSize(baseSize);
-  doc.text(WM_P2, startX + wP1 + 2 + wSub + 2, baseY);
+  doc.text("2", startX + wP1 + 2, baseY + baseSize * 0.28, { angle: 30 });
 
-  doc.restoreGraphicsState();
+  doc.setFontSize(baseSize);
+  doc.text(WM_P2, startX + wP1 + 2 + wSub + 2, baseY, { angle: 30 });
+
+  if (doc.GState) doc.restoreGraphicsState();
 }
 
 // ---------- Scope-Block + Farbhilfen ----------
