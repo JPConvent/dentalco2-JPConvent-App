@@ -318,7 +318,7 @@ function renderLegend(doc, x, y, w, res){
   drawStadiumIcon(doc, x + 18, yy + 8, 34, 18);
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
   doc.text(`${fields.toFixed(2)} Fußballfelder`, x + 44, yy + 6);
-  yy += 28;
+  yy += 36;
 
   // 3) Fernsehturm
   drawTowerIcon(doc, x + 16, yy + 14, 28);
