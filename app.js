@@ -1,13 +1,11 @@
 // ===============================
-// JPConvent – Dental-CO₂ Klimabilanz
+// JPConvent – Dental-CO2 Klimabilanz
 // app.js – Berechnung + PDF (Legende + Visualisierung + Balkendiagramm)
 // ===============================
 
-// ---- Titelteile (CO₂ wird gezeichnet mit echter Tiefstellung) ----
-const TITLE_P1 = "Dental-CO";
-const TITLE_P2 = " Klimabilanz";
-const WM_P1 = "Dental CO";
-const WM_P2 = " – Klimabilanz";
+// ---- Titel/Wasserzeichen (durchgängig "CO2") ----
+const TITLE_TEXT = "Dental-CO2 Klimabilanz";
+const WM_TEXT    = "Dental CO2 – Klimabilanz";
 
 // ---- Emissionsfaktoren (vereinfachte Defaults / DE) ----
 const FACTORS = {
@@ -59,48 +57,39 @@ function calcScope1(){
   }
   return s1;
 }
-
 function calcScope2(){
   const kWh = num("strom_jahr");
   const kaelte = num("kaelte");
   return (kWh + kaelte) * stromFaktor();
 }
-
 function calcScope3(){
   let s3 = 0;
-
   // Servicefahrten (nach Bündelung)
   const fahrten = Math.max(num("wartung_ist") - num("anfahrten_gespart"), 0);
   s3 += fahrten * num("service_km_hz") * FACTORS.scope3.service_km;
-
   // Cloud-Service
   const cloud = $('[name="cloud_genutzt"]')?.value || "Nein";
   if (cloud.startsWith("Ja")) {
     s3 += cloud.includes("volumenbasiert") ? (num("cloud_gb") * 12) * FACTORS.scope3.cloud_per_GB : 5;
   }
-
-  // Pendeln & Papier (vereinfachte Faktoren)
+  // Pendeln & Papier
   s3 += num("pendel_kfz")      * FACTORS.scope1.km_diesel;
   s3 += num("pendel_emob")     * FACTORS.scope1.ev_kwh_per_km * stromFaktor();
   s3 += num("pendel_motorrad") * FACTORS.scope1.km_benzin;
   s3 += num("pendel_oev")      * FACTORS.scope3.bahn_km;
   s3 += num("druck_blatt")     * FACTORS.scope3.papier_blatt;
-
   return s3;
 }
-
 function calcAll(){
   const s1 = calcScope1();
   const s2 = calcScope2();
   const s3 = calcScope3();
   const total = s1 + s2 + s3;
-
   // Visualisierung
   const trees = total / FACTORS.komp.baum_per_year;
   const vol_m3 = total / FACTORS.komp.co2_density;
   const height_m = vol_m3 / FACTORS.komp.football_area_m2;
   const tvPct = (height_m / FACTORS.komp.tv_height_m) * 100;
-
   // Ausgabe
   $("#outScope1").textContent = s1.toFixed(0);
   $("#outScope2").textContent = s2.toFixed(0);
@@ -111,7 +100,6 @@ function calcAll(){
   $("#outHeight").textContent = height_m.toFixed(2);
   $("#outTVPct").textContent  = Math.min(tvPct, 999).toFixed(1);
   $("#resultCard").style.display = "block";
-
   return { s1, s2, s3, total, trees, vol_m3, height_m, tvPct };
 }
 $("#calcBtn")?.addEventListener("click", calcAll);
@@ -138,35 +126,48 @@ $("#pdfBtn")?.addEventListener("click", async ()=>{
   const pageH = doc.internal.pageSize.getHeight();
 
   // Seite 1 – Deckblatt
-  doc.setFont("helvetica","bold"); drawCO2Title(doc, 56, 90, 18);
+  doc.setFont("helvetica","bold"); doc.setFontSize(18);
+  doc.text(TITLE_TEXT, 56, 90);
   doc.setFont("helvetica","normal"); doc.setFontSize(12);
   doc.text(praxis, 56, 112);
   doc.text(`Audit-Datum: ${datum}`, 56, 130);
-  drawWatermarkCO2(doc, pageW, pageH); // sehr transparent
+  drawWatermark(doc, pageW, pageH); // sehr transparent
   footer(doc, pageW, pageH, verHash, 1, 4);
 
-  // Seite 2 – Zusammenfassung
+  // Seite 2 – Zusammenfassung (alle Angaben in CO2)
   doc.addPage();
   header(doc, praxis, datum, "Zusammenfassung");
   doc.setFont("helvetica","normal"); doc.setFontSize(12);
-  doc.text(`Scope 1: ${res.s1.toFixed(0)} kg CO₂`, 56, 140);
-  doc.text(`Scope 2: ${res.s2.toFixed(0)} kg CO₂`, 56, 160);
-  doc.text(`Scope 3: ${res.s3.toFixed(0)} kg CO₂`, 56, 180);
+  doc.text(`Scope 1: ${res.s1.toFixed(0)} kg CO2`, 56, 140);
+  doc.text(`Scope 2: ${res.s2.toFixed(0)} kg CO2`, 56, 160);
+  doc.text(`Scope 3: ${res.s3.toFixed(0)} kg CO2`, 56, 180);
   doc.setFont("helvetica","bold");
-  doc.text(`Gesamt: ${res.total.toFixed(0)} kg CO₂`, 56, 205);
+  doc.text(`Gesamt: ${res.total.toFixed(0)} kg CO2`, 56, 205);
   doc.setFont("helvetica","normal");
   doc.text(`Bäume zur Kompensation: ${Math.ceil(res.trees)}`, 56, 240);
-  doc.text(`CO₂-Volumen: ${res.vol_m3.toFixed(0)} m³`, 56, 260);
+  doc.text(`CO2-Volumen: ${res.vol_m3.toFixed(0)} m³`, 56, 260);
   doc.text(`Säulenhöhe über Fußballfeld: ${res.height_m.toFixed(2)} m`, 56, 280);
   doc.text(`Höhe relativ Berliner Fernsehturm: ${Math.min(res.tvPct,999).toFixed(1)} %`, 56, 300);
   footer(doc, pageW, pageH, verHash, 2, 4);
 
-  // Seite 3 – Struktur
+  // Seite 3 – Struktur (Normen präzisiert)
   doc.addPage();
   header(doc, praxis, datum, "Datenstruktur & Geltungsbereich");
-  scopeBlock(doc, 56, 140, pageW-112, "#e3f2fd", "Scope 1 – Direkte Emissionen (GHG)", "Fuhrpark, Heizung (eigene Erzeugung).");
-  scopeBlock(doc, 56, 210, pageW-112, "#e8f5e9", "Scope 2 – Eingekaufte Energie (GHG)", "Strom (Ökostrom-Anteil berücksichtigt), Kälte, Gebäude.");
-  scopeBlock(doc, 56, 280, pageW-112, "#fff3e0", "Scope 3 – Übrige indirekte Emissionen (GHG)", "Digitalprozesse, Servicefahrten/Bundle, Cloud, Pendeln, Papier, Lieferkette.");
+  scopeBlock(
+    doc, 56, 140, pageW-112, "#e3f2fd",
+    "Scope 1 – Direkte Emissionen (GHG Protocol, UBA/IPCC/DEFRA)",
+    "Fuhrpark, Heizung (eigene Erzeugung)."
+  );
+  scopeBlock(
+    doc, 56, 210, pageW-112, "#e8f5e9",
+    "Scope 2 – Eingekaufte Energie (GHG Protocol, UBA/IPCC/DEFRA)",
+    "Strom (Ökostrom-Anteil berücksichtigt), Kälte, Gebäude."
+  );
+  scopeBlock(
+    doc, 56, 280, pageW-112, "#fff3e0",
+    "Scope 3 – Weitere indirekte Emissionen (GHG Protocol, UBA/IPCC/DEFRA)",
+    "Digitalprozesse, Servicefahrten/Bundle, Cloud, Pendeln, Papier, Lieferkette."
+  );
   footer(doc, pageW, pageH, verHash, 3, 4);
 
   // Seite 4 – Legende + Visualisierung + Balkendiagramm
@@ -179,7 +180,7 @@ $("#pdfBtn")?.addEventListener("click", async ()=>{
   doc.save("Dental-CO2_Klimabilanz_Testbericht.pdf");
 });
 
-// ---- Footer / Header / CO₂-Titel / Wasserzeichen ----
+// ---- Footer / Header / Wasserzeichen ----
 function footer(doc, pageW, pageH, hash, page, pages){
   doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(80);
   const y1 = pageH - 46, y2 = pageH - 28, y3 = pageH - 12;
@@ -188,49 +189,20 @@ function footer(doc, pageW, pageH, hash, page, pages){
   doc.text(`Verifikations-ID: ${hash}`, 56, y2);
   doc.text(`Seite ${page} von ${pages}`, pageW - 56, y3, { align: "right" });
 }
-
 function header(doc, praxis, datum, titel){
-  doc.setFont("helvetica","bold"); drawCO2Title(doc, 56, 56, 12);
+  doc.setFont("helvetica","bold"); doc.setFontSize(12);
+  doc.text(TITLE_TEXT, 56, 56);
   doc.setFont("helvetica","normal");
   doc.text(praxis, 56, 72);
   doc.text(`Audit: ${datum}`, doc.internal.pageSize.getWidth()-56, 56, { align: "right" });
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
   doc.text(titel, doc.internal.pageSize.getWidth()/2, 90, { align: "center" });
 }
-
-// CO₂-Rendering als echte Tiefstellung
-function drawCO2Title(doc, x, y, baseSize){
-  doc.setFontSize(baseSize);
-  doc.text(TITLE_P1, x, y);
-  const w1 = doc.getTextWidth(TITLE_P1);
-  const subSize = baseSize * 0.7;
-  doc.setFontSize(subSize); doc.text("2", x + w1 + 2, y + baseSize * 0.28);
-  doc.setFontSize(baseSize);
-  const w2 = doc.getTextWidth("2") * (subSize/baseSize);
-  doc.text(TITLE_P2, x + w1 + 2 + w2 + 2, y);
-}
-
-// Sehr transparentes Wasserzeichen, links-unten → rechts-oben (Winkel 30°)
-function drawWatermarkCO2(doc, pageW, pageH){
-  const baseSize = 34, subSize = baseSize * 0.7;
-  const cx = pageW/2, cy = pageH/2;
-
-  if (doc.GState) { doc.saveGraphicsState(); doc.setGState(new doc.GState({ opacity: 0.05 })); } // „Hauch“
-
-  doc.setFont("helvetica","bold");
-  doc.setFontSize(baseSize);
-  const wP1 = doc.getTextWidth(WM_P1);
-  doc.setFontSize(subSize); const wSub = doc.getTextWidth("2");
-  doc.setFontSize(baseSize); const wP2 = doc.getTextWidth(WM_P2);
-
-  const totalW = wP1 + 2 + wSub + 2 + wP2;
-  const startX = cx - totalW/2;
-  const baseY = cy;
-
-  doc.setFontSize(baseSize); doc.text(WM_P1, startX, baseY, { angle: 30 });
-  doc.setFontSize(subSize);  doc.text("2", startX + wP1 + 2, baseY + baseSize*0.28, { angle: 30 });
-  doc.setFontSize(baseSize); doc.text(WM_P2, startX + wP1 + 2 + wSub + 2, baseY, { angle: 30 });
-
+function drawWatermark(doc, pageW, pageH){
+  // sehr transparentes diagonales Wasserzeichen
+  if (doc.GState) { doc.saveGraphicsState(); doc.setGState(new doc.GState({ opacity: 0.05 })); }
+  doc.setFont("helvetica","bold"); doc.setFontSize(34);
+  doc.text(WM_TEXT, pageW/2, pageH/2, { angle: 30, align: "center" });
   if (doc.GState) doc.restoreGraphicsState();
 }
 
@@ -294,6 +266,7 @@ function renderLegend(doc, x, y, w, res){
   doc.text("• Scope 2 – Eingekaufte Energie (Strom, Kälte, Gebäude).", x, yy); yy += lh;
   doc.text("• Scope 3 – Übrige indirekte Emissionen (Digitalprozesse, Servicefahrten/Bundle, Cloud, Pendeln, Papier, Lieferkette).", x, yy, { maxWidth: w });
   yy += lh + 10;
+  yy += 10; // zusätzlicher Absatz vor „Visualisierung …“
 
   // Visualisierungstitel
   doc.setFont("helvetica","bold");
@@ -311,23 +284,22 @@ function renderLegend(doc, x, y, w, res){
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
   doc.text(`${trees} Bäume`, x + 36, yy + 6);
   doc.setFont("helvetica","normal"); doc.setFontSize(10);
-  doc.text(`CO₂-Volumen: ${res.vol_m3.toFixed(0)} m³`, x + 36, yy + 22);
-  yy += 36;
+  doc.text(`CO2-Volumen: ${res.vol_m3.toFixed(0)} m³`, x + 36, yy + 22); // CO2-Volumen
+  yy += 40; // Abstand Bäume → Feld (40)
 
   // 2) Fußballfelder
   drawStadiumIcon(doc, x + 18, yy + 8, 34, 18);
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
   doc.text(`${fields.toFixed(2)} Fußballfelder`, x + 44, yy + 6);
-  yy += 36;
+  yy += 40; // Abstand Feld → Turm (40)
 
   // 3) Fernsehturm
   drawTowerIcon(doc, x + 16, yy + 14, 28);
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
-  doc.text(`${heightM.toFixed(2)} m (≈ ${tvPct.toFixed(1)}% TV-Turm)`, x + 44, yy + 6);
-  yy += 20;
+  doc.text(`${heightM.toFixed(2)} m ≈ ${tvPct.toFixed(1)}% TV-Turm`, x + 44, yy + 6); // ohne Klammern
+  yy += 40; // Abstand Turm → Quellen (40)
 
   // Quellen/Methodik
-  yy += 10;
   doc.setFont("helvetica","bold"); doc.setFontSize(11);
   doc.text("Quellen/Methodik:", x, yy); yy += 14;
   doc.setFont("helvetica","normal"); doc.setFontSize(10);
@@ -336,7 +308,7 @@ function renderLegend(doc, x, y, w, res){
 }
 
 // ===============================
-// Balkendiagramm (Scope 1–3) – Titel mit „t CO₂“, Werte über Balken
+// Balkendiagramm (Scope 1–3) – Titel „(t CO2)“, Werte über Balken
 // ===============================
 function renderBarChart(doc, x, y, w, h, res){
   const s1 = res.s1 / 1000, s2 = res.s2 / 1000, s3 = res.s3 / 1000; // in t
@@ -347,19 +319,15 @@ function renderBarChart(doc, x, y, w, h, res){
   ];
 
   const max = Math.max(1, s1, s2, s3);
-  const padding = 46;               // etwas mehr Luft
+  const padding = 46;
   const chartW = w - padding*2;
   const chartH = h - padding*2;
   const barW = chartW / (data.length * 1.8);
 
-  // Titel: "Balkendiagramm – Emissionen je Scope (t CO₂)"
+  // Titel: "Balkendiagramm – Emissionen je Scope (t CO2)"
   doc.setFont("helvetica","bold");
   doc.setFontSize(11);
-  const titleLeft = "Balkendiagramm – Emissionen je Scope (t CO";
-  const titleX = x, titleY = y + 12;
-  doc.text(titleLeft, titleX, titleY);
-  const txW = doc.getTextWidth(titleLeft);
-  drawCO2Inline(doc, titleX + txW, titleY, 11, ")"); // nur „)“ → ergibt „CO₂)“
+  doc.text("Balkendiagramm – Emissionen je Scope (t CO2)", x, y + 12);
 
   // Achsen
   doc.setDrawColor(180,186,194);
@@ -387,14 +355,4 @@ function renderBarChart(doc, x, y, w, h, res){
 
     cx += barW * 1.8;
   });
-}
-
-// Hilfsfunktion: „₂“ zeichnen + beliebiger Nachlauftext
-function drawCO2Inline(doc, x, y, baseSize, tailText){
-  const sub = baseSize * 0.7;
-  doc.setFontSize(sub);
-  doc.text("2", x + 2, y + baseSize * 0.28);
-  doc.setFontSize(baseSize);
-  const w2 = doc.getTextWidth("2") * (sub / baseSize);
-  if (tailText) doc.text(tailText, x + 2 + w2 + 2, y);
 }
