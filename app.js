@@ -1,7 +1,10 @@
 // ===============================
 // JPConvent – Dental-CO₂ Klimabilanz
-// app.js (Berechnung + PDF-Export)
+// app.js (Berechnung + PDF-Export) – angepasst gem. Vorgaben
 // ===============================
+
+const TITLE = "Dental-CO\u2082 Klimabilanz";          // CO₂ mit tiefgestellter 2
+const WM_TEXT = "Dental CO\u2082 \u2013 Klimabilanz"; // Wasserzeichen-Text
 
 // ---------- Emissionsfaktoren (vereinfachte DE-Defaults) ----------
 const FACTORS = {
@@ -37,7 +40,7 @@ function updateEntityName() {
 });
 updateEntityName();
 
-// ---------- Audit-Datum (Erst-/Revalidierung) ----------
+// ---------- Audit-Datum ----------
 function auditDate() {
   const r = $('[name="revalidierung"]')?.value?.trim();
   const e = $('[name="erstvalidierung"]')?.value?.trim();
@@ -69,28 +72,26 @@ function calcScope2() {
 function calcScope3() {
   let s3 = 0;
 
-  // Servicefahrten (Wartungen - Bündelungen), km hin & zurück
+  // Servicefahrten
   const fahrten = Math.max(num("wartung_ist") - num("anfahrten_gespart"), 0);
   s3 += fahrten * num("service_km_hz") * FACTORS.scope3.service_km;
 
-  // Cloud-Service
+  // Cloud
   const cloud = $('[name="cloud_genutzt"]')?.value || "Nein";
   if (cloud.startsWith("Ja")) {
     if (cloud.includes("volumenbasiert")) {
       s3 += (num("cloud_gb") * 12) * FACTORS.scope3.cloud_per_GB;
     } else {
-      s3 += 5; // pauschaler Footprint/Jahr
+      s3 += 5; // pauschal
     }
   }
 
-  // Pendeln (vereinfachte Ansätze)
-  s3 += num("pendel_kfz")      * FACTORS.scope1.km_diesel;                      // konservativ
-  s3 += num("pendel_emob")     * FACTORS.scope1.ev_kwh_per_km * stromFaktor();  // EV
-  s3 += num("pendel_motorrad") * FACTORS.scope1.km_benzin;                      // Näherung
+  // Pendeln & Papier
+  s3 += num("pendel_kfz")      * FACTORS.scope1.km_diesel;
+  s3 += num("pendel_emob")     * FACTORS.scope1.ev_kwh_per_km * stromFaktor();
+  s3 += num("pendel_motorrad") * FACTORS.scope1.km_benzin;
   s3 += num("pendel_oev")      * FACTORS.scope3.bahn_km;
-
-  // Papier
-  s3 += num("druck_blatt") * FACTORS.scope3.papier_blatt;
+  s3 += num("druck_blatt")     * FACTORS.scope3.papier_blatt;
 
   return s3;
 }
@@ -101,13 +102,11 @@ function calcAll() {
   const s3 = calcScope3();
   const total = s1 + s2 + s3;
 
-  // Kompensation & Visualisierung
-  const trees = total / FACTORS.komp.baum_per_year;
-  const vol_m3 = total / FACTORS.komp.co2_density;
-  const height_m = vol_m3 / FACTORS.komp.football_area_m2;
-  const tvPct = (height_m / FACTORS.komp.tv_height_m) * 100;
+  const trees   = total / FACTORS.komp.baum_per_year;
+  const vol_m3  = total / FACTORS.komp.co2_density;
+  const height_m= vol_m3 / FACTORS.komp.football_area_m2;
+  const tvPct   = (height_m / FACTORS.komp.tv_height_m) * 100;
 
-  // Ausgabe
   $("#outScope1").textContent = s1.toFixed(0);
   $("#outScope2").textContent = s2.toFixed(0);
   $("#outScope3").textContent = s3.toFixed(0);
@@ -121,10 +120,9 @@ function calcAll() {
   return { s1, s2, s3, total, trees, vol_m3, height_m, tvPct };
 }
 
-// Klick: Berechnen
 $("#calcBtn")?.addEventListener("click", calcAll);
 
-// ---------- Verifikations-ID (Test, ohne Geheimschlüssel) ----------
+// ---------- Verifikations-ID (Test) ----------
 async function computeHash(text) {
   const enc = new TextEncoder().encode(text);
   const buf = await crypto.subtle.digest("SHA-256", enc);
@@ -134,28 +132,25 @@ async function computeHash(text) {
 // ---------- PDF-Export ----------
 $("#pdfBtn")?.addEventListener("click", async () => {
   const { jsPDF } = window.jspdf;
-  // Immer mit frischer Berechnung arbeiten
-  const res = calcAll();
-
-  const praxis = $("#entityName").textContent || "—";
+  const res   = calcAll();
+  const praxis= $("#entityName").textContent || "—";
   const datum = auditDate() || new Date().toISOString().slice(0, 10);
   const verHash = await computeHash(`${praxis}|${datum}`);
 
-  const doc = new jsPDF({ unit: "pt", format: "a4" }); // 595 × 842 pt
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
 
   // ---- Deckblatt ----
   doc.setFont("helvetica", "bold"); doc.setFontSize(18);
-  doc.text("Dental-CO₂ Klimabilanz", 56, 90);
+  doc.text(TITLE, 56, 90);
   doc.setFont("helvetica", "normal"); doc.setFontSize(12);
   doc.text(praxis, 56, 112);
   doc.text(`Audit-Datum: ${datum}`, 56, 130);
 
-  // Wasserzeichen diagonal (dezent)
-  drawWatermark(doc, pageW, pageH, "JPConvent – Dental-CO₂");
+  // Wasserzeichen kleiner, von links unten nach rechts oben (Winkel +30°)
+  drawWatermark(doc, pageW, pageH, WM_TEXT);
 
-  // Footer (Seite 1)
   footer(doc, pageW, pageH, verHash, 1, 3);
 
   // ---- Seite 2: Summary ----
@@ -166,7 +161,6 @@ $("#pdfBtn")?.addEventListener("click", async () => {
   doc.text(`Scope 1: ${res.s1.toFixed(0)} kg CO₂e`, 56, 140);
   doc.text(`Scope 2: ${res.s2.toFixed(0)} kg CO₂e`, 56, 160);
   doc.text(`Scope 3: ${res.s3.toFixed(0)} kg CO₂e`, 56, 180);
-
   doc.setFont("helvetica", "bold");
   doc.text(`Gesamt: ${res.total.toFixed(0)} kg CO₂e`, 56, 205);
 
@@ -194,22 +188,27 @@ $("#pdfBtn")?.addEventListener("click", async () => {
 
   footer(doc, pageW, pageH, verHash, 3, 3);
 
-  // ---- Exportieren ----
   doc.save("Dental-CO2_Klimabilanz_Testbericht.pdf");
 });
 
 // ---------- Rendering-Helfer ----------
 function footer(doc, pageW, pageH, hash, page, pages) {
   doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(80);
+
+  // Größerer Zeilenabstand im Footer (robuster für Xodo etc.)
+  const y1 = pageH - 46;   // erste Zeile höher
+  const y2 = pageH - 28;   // zweite Zeile darunter
+  const y3 = pageH - 12;   // Seitenzahl (rechts)
+
   const textLeft = "Lizenzierte Nutzung – JPConvent Klimaneutral. Berechnungen (DE/EU/international): UBA / IPCC / DEFRA / GHG Protocol. KI-unterstützte Auswertung (AI Act).";
-  doc.text(textLeft, 56, pageH - 40, { maxWidth: pageW - 180 });
-  doc.text(`Verifikations-ID: ${hash}`, 56, pageH - 25);
-  doc.text(`Seite ${page} von ${pages}`, pageW - 56, pageH - 25, { align: "right" });
+  doc.text(textLeft, 56, y1, { maxWidth: pageW - 180 });
+  doc.text(`Verifikations-ID: ${hash}`, 56, y2);
+  doc.text(`Seite ${page} von ${pages}`, pageW - 56, y3, { align: "right" });
 }
 
 function header(doc, praxis, datum, titel) {
   doc.setFont("helvetica", "bold"); doc.setFontSize(12);
-  doc.text("Dental-CO₂ Klimabilanz", 56, 56);
+  doc.text(TITLE, 56, 56);
   doc.setFont("helvetica", "normal");
   doc.text(praxis, 56, 72);
   doc.text(`Audit: ${datum}`, doc.internal.pageSize.getWidth() - 56, 56, { align: "right" });
@@ -219,14 +218,15 @@ function header(doc, praxis, datum, titel) {
 
 function drawWatermark(doc, pageW, pageH, text) {
   doc.saveGraphicsState();
-  doc.setGState(new doc.GState({ opacity: 0.12 }));
-  doc.setFont("helvetica", "bold"); doc.setFontSize(46);
-  doc.text(text, pageW / 2, pageH / 2, { angle: -30, align: "center" });
+  doc.setGState(new doc.GState({ opacity: 0.10 })); // etwas dezenter
+  doc.setFont("helvetica", "bold"); 
+  doc.setFontSize(40); // kleiner als zuvor
+  // von links unten nach rechts oben: Winkel +30°, auf Seitenmitte ausgerichtet
+  doc.text(text, pageW / 2, pageH / 2, { angle: 30, align: "center" });
   doc.restoreGraphicsState();
 }
 
 function scopeBlock(doc, x, y, w, colorHex, title, desc) {
-  // farbiger Balken
   const rgb = hexToRgb(colorHex) || { r: 230, g: 230, b: 230 };
   doc.setFillColor(rgb.r, rgb.g, rgb.b);
   doc.roundedRect(x, y - 18, w, 28, 6, 6, "F");
