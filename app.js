@@ -248,14 +248,13 @@ function hexToRgb(hex){
 }
 
 // ===============================
-// Legende + Visualisierung (vektorbasierte Icons) – letzte Seite
+// Legende + Visualisierung (vektorbasierte Icons) – letzte Seite (untereinander)
 // ===============================
 
 // Icons als Vektorformen → PDF-Viewer-unabhängig
 function drawTreeIcon(doc, x, y, size){
   // Krone
   doc.setFillColor(90,160,110);
-  // Dreieck: (oben), (links unten), (rechts unten)
   doc.triangle(x, y - size, x - size*0.7, y, x + size*0.7, y, 'F');
   // Stamm
   doc.setFillColor(110,80,50);
@@ -294,18 +293,12 @@ function renderLegend(doc, x, y, w, res){
   doc.text("• Scope 1 – Direkte Emissionen (Fuhrpark, Heizung).", x, yy); yy += lh;
   doc.text("• Scope 2 – Eingekaufte Energie (Strom, Kälte, Gebäude).", x, yy); yy += lh;
   doc.text("• Scope 3 – Übrige indirekte Emissionen (Digitalprozesse, Servicefahrten/Bundle, Cloud, Pendeln, Papier, Lieferkette).", x, yy, { maxWidth: w });
-  yy += lh + 8;
+  yy += lh + 10;
 
   // Visualisierungstitel
   doc.setFont("helvetica","bold");
   doc.text("Visualisierung der Gesamtemissionen:", x, yy);
   yy += lh;
-
-  // Spaltenraster
-  const colW = (w - 40) / 3;
-  const col1 = x;
-  const col2 = x + colW + 20;
-  const col3 = x + (colW + 20) * 2;
 
   // Werte
   const trees   = Math.ceil(res.trees);
@@ -314,24 +307,27 @@ function renderLegend(doc, x, y, w, res){
   const tvPct   = Math.min(res.tvPct, 999);
 
   // 1) Bäume
-  drawTreeIcon(doc, col1 + 24, yy + 20, 16);
+  drawTreeIcon(doc, x + 14, yy + 8, 12);
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
-  doc.text(`${trees} Bäume`, col1 + 54, yy + 10);
+  doc.text(`${trees} Bäume`, x + 36, yy + 6);
   doc.setFont("helvetica","normal"); doc.setFontSize(10);
-  doc.text(`CO₂-Volumen: ${res.vol_m3.toFixed(0)} m³`, col1 + 54, yy + 26);
+  doc.text(`CO₂-Volumen: ${res.vol_m3.toFixed(0)} m³`, x + 36, yy + 22);
+  yy += 36;
 
   // 2) Fußballfelder
-  drawStadiumIcon(doc, col2 + 24, yy + 18, 40, 22);
+  drawStadiumIcon(doc, x + 18, yy + 8, 34, 18);
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
-  doc.text(`${fields.toFixed(2)} Fußballfelder`, col2 + 54, yy + 10);
+  doc.text(`${fields.toFixed(2)} Fußballfelder`, x + 44, yy + 6);
+  yy += 28;
 
   // 3) Fernsehturm
-  drawTowerIcon(doc, col3 + 22, yy + 26, 36);
+  drawTowerIcon(doc, x + 16, yy + 14, 28);
   doc.setFont("helvetica","bold"); doc.setFontSize(12);
-  doc.text(`${heightM.toFixed(2)} m (≈ ${tvPct.toFixed(1)}% TV-Turm)`, col3 + 54, yy + 10);
+  doc.text(`${heightM.toFixed(2)} m (≈ ${tvPct.toFixed(1)}% TV-Turm)`, x + 44, yy + 6);
+  yy += 20;
 
   // Quellen/Methodik
-  yy += 56;
+  yy += 10;
   doc.setFont("helvetica","bold"); doc.setFontSize(11);
   doc.text("Quellen/Methodik:", x, yy); yy += 14;
   doc.setFont("helvetica","normal"); doc.setFontSize(10);
@@ -340,7 +336,7 @@ function renderLegend(doc, x, y, w, res){
 }
 
 // ===============================
-// Balkendiagramm (Scope 1–3) – Werte über Balken
+// Balkendiagramm (Scope 1–3) – Titel mit „t CO₂“, Werte über Balken
 // ===============================
 function renderBarChart(doc, x, y, w, h, res){
   const s1 = res.s1 / 1000, s2 = res.s2 / 1000, s3 = res.s3 / 1000; // in t
@@ -351,10 +347,19 @@ function renderBarChart(doc, x, y, w, h, res){
   ];
 
   const max = Math.max(1, s1, s2, s3);
-  const padding = 46;             // etwas mehr Luft
+  const padding = 46;               // etwas mehr Luft
   const chartW = w - padding*2;
   const chartH = h - padding*2;
   const barW = chartW / (data.length * 1.8);
+
+  // Titel: "Balkendiagramm – Emissionen je Scope (t CO₂)"
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(11);
+  const titleLeft = "Balkendiagramm – Emissionen je Scope (t CO";
+  const titleX = x, titleY = y + 12;
+  doc.text(titleLeft, titleX, titleY);
+  const txW = doc.getTextWidth(titleLeft);
+  drawCO2Inline(doc, titleX + txW, titleY, 11, ")"); // nur „)“ → ergibt „CO₂)“
 
   // Achsen
   doc.setDrawColor(180,186,194);
@@ -382,8 +387,14 @@ function renderBarChart(doc, x, y, w, h, res){
 
     cx += barW * 1.8;
   });
+}
 
-  // Titel
-  doc.setFont("helvetica","bold"); doc.setFontSize(11);
-  doc.text("Balkendiagramm – Emissionen je Scope (t CO₂e)", x, y + 12);
+// Hilfsfunktion: „₂“ zeichnen + beliebiger Nachlauftext
+function drawCO2Inline(doc, x, y, baseSize, tailText){
+  const sub = baseSize * 0.7;
+  doc.setFontSize(sub);
+  doc.text("2", x + 2, y + baseSize * 0.28);
+  doc.setFontSize(baseSize);
+  const w2 = doc.getTextWidth("2") * (sub / baseSize);
+  if (tailText) doc.text(tailText, x + 2 + w2 + 2, y);
 }
